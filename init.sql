@@ -127,8 +127,8 @@ CREATE TABLE content.film_work (
     creation_date date,
     rating double precision,
     type text NOT NULL,
-    created_at timestamp with time zone,
-    updated_at timestamp with time zone,
+    created timestamp with time zone,
+    modified timestamp with time zone,
     file_path character varying(100)
 );
 
@@ -143,8 +143,8 @@ CREATE TABLE content.genre (
     id uuid NOT NULL,
     name text NOT NULL,
     description text,
-    created_at timestamp with time zone,
-    updated_at timestamp with time zone
+    created timestamp with time zone,
+    modified timestamp with time zone
 );
 
 
@@ -158,7 +158,7 @@ CREATE TABLE content.genre_film_work (
     id uuid NOT NULL,
     genre_id uuid NOT NULL,
     film_work_id uuid NOT NULL,
-    created_at timestamp with time zone
+    created timestamp with time zone
 );
 
 
@@ -171,8 +171,8 @@ ALTER TABLE content.genre_film_work OWNER TO app;
 CREATE TABLE content.person (
     id uuid NOT NULL,
     full_name text NOT NULL,
-    created_at timestamp with time zone,
-    updated_at timestamp with time zone
+    created timestamp with time zone,
+    modified timestamp with time zone
 );
 
 
@@ -187,7 +187,7 @@ CREATE TABLE content.person_film_work (
     film_work_id uuid NOT NULL,
     person_id uuid NOT NULL,
     role text NOT NULL,
-    created_at timestamp with time zone
+    created timestamp with time zone
 );
 
 
@@ -599,7 +599,7 @@ ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('p
 -- Data for Name: film_work; Type: TABLE DATA; Schema: content; Owner: app
 --
 
-COPY content.film_work (id, title, description, creation_date, rating, type, created_at, updated_at, file_path) FROM stdin;
+COPY content.film_work (id, title, description, creation_date, rating, type, created, modified, file_path) FROM stdin;
 3d825f60-9fff-4dfe-b294-1a45fa1e115d	Star Wars: Episode IV - A New Hope	The Imperial Forces, under orders from cruel Darth Vader, hold Princess Leia hostage in their efforts to quell the rebellion against the Galactic Empire. Luke Skywalker and Han Solo, captain of the Millennium Falcon, work together with the companionable droid duo R2-D2 and C-3PO to rescue the beautiful princess, help the Rebel Alliance and restore freedom and justice to the Galaxy.	\N	8.6	movie	2021-06-16 20:14:09.221838+00	2021-06-16 20:14:09.221855+00	\N
 0312ed51-8833-413f-bff5-0e139c11264a	Star Wars: Episode V - The Empire Strikes Back	Luke Skywalker, Han Solo, Princess Leia and Chewbacca face attack by the Imperial forces and its AT-AT walkers on the ice planet Hoth. While Han and Leia escape in the Millennium Falcon, Luke travels to Dagobah in search of Yoda. Only with the Jedi master's help will Luke survive when the dark side of the Force beckons him into the ultimate duel with Darth Vader.	\N	8.7	movie	2021-06-16 20:14:09.221939+00	2021-06-16 20:14:09.221958+00	\N
 025c58cd-1b7e-43be-9ffb-8571a613579b	Star Wars: Episode VI - Return of the Jedi	Luke Skywalker battles horrible Jabba the Hut and cruel Darth Vader to save his comrades in the Rebel Alliance and triumph over the Galactic Empire. Han Solo and Princess Leia reaffirm their love and team with Chewbacca, Lando Calrissian, the Ewoks and the androids C-3PO and R2-D2 to aid in the disruption of the Dark Side and the defeat of the evil emperor.	\N	8.3	movie	2021-06-16 20:14:09.221999+00	2021-06-16 20:14:09.222016+00	\N
@@ -1606,7 +1606,7 @@ d0e7e53a-8de1-4a21-b869-4ff8fc0e846e	1983 MLB All-Star Game	\N	\N	6.5	movie	2021
 -- Data for Name: genre; Type: TABLE DATA; Schema: content; Owner: app
 --
 
-COPY content.genre (id, name, description, created_at, updated_at) FROM stdin;
+COPY content.genre (id, name, description, created, modified) FROM stdin;
 3d8d9bf5-0d90-4353-88ba-4ccc5d2c07ff	Action	\N	2021-06-16 20:14:09.309735+00	2021-06-16 20:14:09.309765+00
 120a21cf-9097-479e-904a-13dd7198c1dd	Adventure	\N	2021-06-16 20:14:09.309818+00	2021-06-16 20:14:09.309836+00
 b92ef010-5e4c-4fd0-99d6-41b6456272cd	Fantasy	\N	2021-06-16 20:14:09.309869+00	2021-06-16 20:14:09.309886+00
@@ -1640,7 +1640,7 @@ f24fd632-b1a5-4273-a835-0119bd12f829	News	\N	2021-06-16 20:14:09.310955+00	2021-
 -- Data for Name: genre_film_work; Type: TABLE DATA; Schema: content; Owner: app
 --
 
-COPY content.genre_film_work (id, genre_id, film_work_id, created_at) FROM stdin;
+COPY content.genre_film_work (id, genre_id, film_work_id, created) FROM stdin;
 65058993-c2ad-4168-b8cf-b64b787b76ce	b7c51bbc-7604-4f4b-b567-a71d1b84dac6	e6278db3-f139-4c4d-938f-55d6d2cc59cc	2022-06-27 21:07:52.077571+00
 d4a84ce5-b69c-4676-8319-c6a9bf65ce86	b7c51bbc-7604-4f4b-b567-a71d1b84dac6	f2564175-cd54-4c37-9740-23ef533e3305	2022-06-27 22:27:13.866093+00
 d1684d62-58c1-4784-914b-9028dcc67955	237fd1e4-c98e-454e-aa13-8a13fb7547b5	045f2518-5c38-48df-9c48-639520ab57af	2021-06-16 20:14:09.579988+00
@@ -3881,7 +3881,7 @@ d72ea243-3606-465b-9fab-60d46003a69d	1cacff68-643e-4ddd-8f57-84b62538081a	ddbc2f
 -- Data for Name: person; Type: TABLE DATA; Schema: content; Owner: app
 --
 
-COPY content.person (id, full_name, created_at, updated_at) FROM stdin;
+COPY content.person (id, full_name, created, modified) FROM stdin;
 a5a8f573-3cee-4ccc-8a2b-91cb9f55250a	George Lucas	2021-06-16 20:14:09.313068+00	2021-06-16 20:14:09.313086+00
 26e83050-29ef-4163-a99d-b546cac208f8	Mark Hamill	2021-06-16 20:14:09.313133+00	2021-06-16 20:14:09.313152+00
 5b4bf1bc-3397-4e83-9b17-8b10c6544ed1	Harrison Ford	2021-06-16 20:14:09.313188+00	2021-06-16 20:14:09.313206+00
@@ -8055,7 +8055,7 @@ e84b46b0-1623-41d1-8ab8-26db182d1261	Marina Janhunen Calderón	2021-06-16 20:14:
 -- Data for Name: person_film_work; Type: TABLE DATA; Schema: content; Owner: app
 --
 
-COPY content.person_film_work (id, film_work_id, person_id, role, created_at) FROM stdin;
+COPY content.person_film_work (id, film_work_id, person_id, role, created) FROM stdin;
 2dba43a5-7e55-4bc8-993f-51c4d208bc8c	d4b209dc-88fe-4380-a43e-8966673f2fe0	232fd5ab-166f-47e4-afe1-28d3450721d5	director	2021-06-16 20:14:09.702729+00
 6852da17-aa75-4df9-aa5e-545055eab043	3b74bedf-0cba-40c3-8270-0e5024f8b9a4	038267d1-6ac4-4ca6-81dc-bab21466269b	writer	2021-06-16 20:14:09.702795+00
 a7146aa2-8eb2-4ed1-a474-633d0e153ff7	38b68a7a-86bf-4e02-82f7-2ec1fd2fa993	daf0d763-2dff-4cf1-a56b-cad0e76924c4	director	2021-06-16 20:14:09.702843+00
