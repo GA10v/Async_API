@@ -1,0 +1,84 @@
+version: '3'
+services:
+  db:
+    container_name: admin_panel_db
+    restart: always
+    image: postgres:13
+    environment:
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASSWORD
+    env_file:
+      - .env
+    volumes:
+      - ./app/db_init/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db_data:/var/lib/postgresql/data/
+    expose:
+      - 5432
+
+  app:
+    container_name: admin_panel_app
+    restart: always
+    build:
+        context: .
+        dockerfile: ./app/Dockerfile
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+      - static:/app/data/static
+      - media:/app/data/media
+    depends_on:
+      - db
+    expose:
+      - 8000
+
+  nginx:
+    container_name: admin_panel_nginx
+    restart: always
+    image: nginx:1.23.0
+    volumes:
+      - static:/data/static
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/configs:/etc/nginx/conf.d:ro
+    depends_on:
+      - app
+      - db
+    ports:
+      - 80:80
+
+  redis:
+    container_name: admin_panel_redis
+    restart: always
+    image: redis:7.0.4
+    ports:
+      - 6379:6379
+  
+  etl:
+    container_name: admin_panel_etl
+    restart: always
+    build:
+        context: .
+        dockerfile: ./postgres_to_es/Dockerfile
+    env_file: .env
+    volumes:
+      - ./logs:/etl/logs
+      - ./postgres_to_es/data:/etl/data
+    depends_on:
+      - app
+      - db
+      - elasticsearch
+
+  elasticsearch:
+    container_name: admin_panel_elastic
+    restart: always
+    image: elasticsearch:7.17.5
+    environment:
+      - 'discovery.type=single-node'
+      - 'xpack.security.enabled=false'
+    ports:
+      - "9200:9200"
+
+volumes:
+  static:
+  media:
+  db_data:

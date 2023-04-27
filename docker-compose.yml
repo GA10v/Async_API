@@ -18,7 +18,10 @@ services:
     restart: always
 
   etl:
-    image: kenki228/cinema_etl
+    container_name: fastapi_etl
+    build:
+      context: ./etl
+      dockerfile: ./Dockerfile
     volumes:
       - etl_data:/src/data
     env_file:
@@ -29,6 +32,7 @@ services:
     restart: always
 
   fastapi:
+    container_name: fastapi_app
     build:
       context: .
       args:
@@ -44,6 +48,7 @@ services:
     restart: always
 
   elastic:
+    container_name: fastapi_elasti
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.5
     environment:
       - 'xpack.security.enabled=false'
